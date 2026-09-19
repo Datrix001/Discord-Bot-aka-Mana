@@ -23,24 +23,49 @@ func Greet(s *discordgo.Session, m *discordgo.MessageCreate) {
 	s.MessageReactionAdd(m.ChannelID, m.ID, "👋")
 }
 
+//PART ONE SEARCH
+
+// func Search(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+// 	arg := strings.Join(args[2:], " ")
+// 	arg = Normalize(arg)
+// 	isThere := false
+// 	var comic string
+
+// 	for _, value := range comicName {
+// 		if strings.Contains(arg, value) {
+// 			isThere = true
+// 			comic = value
+// 		}
+// 	}
+// 	if isThere {
+// 		s.ChannelMessageSend(m.ChannelID, "Searching for "+comic)
+// 	} else {
+// 		s.ChannelMessageSend(m.ChannelID, "No Comic Like that exist")
+
+// 	}
+// }
+
+// PART 2 SEARCH
+// SEARCH MANHWA
+
 func Search(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+	// isThere := false
 	arg := strings.Join(args[2:], " ")
 	arg = Normalize(arg)
-	isThere := false
-	var comic string
-
-	for _, value := range comicName {
-		if strings.Contains(arg, value) {
-			isThere = true
-			comic = value
-		}
+	comicDetails, err := GetManga(arg)
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, "Bro The manhwa you mentioned doesn't exist")
+		return
 	}
-	if isThere {
-		s.ChannelMessageSend(m.ChannelID, "Searching for "+comic)
-	} else {
-		s.ChannelMessageSend(m.ChannelID, "No Comic Like that exist")
-
+	details := fmt.Sprintf(" Author for %s is %s.\n Total chapters are %s", comicDetails.Name, comicDetails.Author, comicDetails.LatestChapter)
+	messageEmbed := discordgo.MessageEmbed{
+		Title:       strings.ToUpper(comicDetails.Name),
+		URL:         comicDetails.CoverURL,
+		Description: details,
+		Color:       0x5865F2,
 	}
+	s.ChannelMessageSendEmbed(m.ChannelID, &messageEmbed)
+
 }
 
 func Dm(s *discordgo.Session, m *discordgo.MessageCreate) {
