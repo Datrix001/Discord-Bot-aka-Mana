@@ -1,4 +1,4 @@
-module example.com/main.go
+module discordBot/bot
 
 go 1.26.5
 

@@ -1,24 +1,19 @@
-package main
+package sources
 
 import (
 	"errors"
 	"fmt"
 	"strings"
 
+	m "discordBot/bot/manga"
+
 	"github.com/gocolly/colly"
 )
 
-type Comic struct {
-	Name          string
-	Author        string
-	LatestChapter string
-	CoverURL      string
-}
-
-func GetManga(name string) (Comic, error) {
+func GetManga(name string) (m.Comic, error) {
 	comicName := normalize(name)
 	comicName = comicName + "-" + "6f7fe6eb"
-	var comic Comic
+	var comic m.Comic
 
 	c := colly.NewCollector(colly.AllowedDomains("asurascans.com"))
 

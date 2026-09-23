@@ -1,6 +1,7 @@
 package main
 
 import (
+	"discordBot/bot/sources"
 	"fmt"
 	"log"
 	"strings"
@@ -52,7 +53,7 @@ func Search(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	// isThere := false
 	arg := strings.Join(args[2:], " ")
 	arg = Normalize(arg)
-	comicDetails, err := GetManga(arg)
+	comicDetails, err := sources.GetManga(arg)
 	if err != nil {
 		s.ChannelMessageSend(m.ChannelID, "Bro The manhwa you mentioned doesn't exist")
 		return
