@@ -3,6 +3,7 @@ package sources
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 
 	m "discordBot/bot/manga"
@@ -88,6 +89,59 @@ func GetManga(name string) (m.Comic, error) {
 	fmt.Println("Done With Something")
 
 	return comic, nil
+}
+
+func GetChapter(name string, chapNum string) (m.Chapter, error) {
+
+	var chap m.Chapter
+
+	chap.MangaId = name
+	chap.ChapterId = chapNum
+
+	c := colly.NewCollector(colly.AllowedDomains("asurascans.com"))
+
+	// ==================================================
+	// GET TOP CHAPTER URL
+	// ==================================================
+
+	c.OnHTML(`div.divide-y a[href*="/chapter/"]`, func(h *colly.HTMLElement) {
+
+		link := h.Attr("href")
+
+		fmt.Printf(
+			"Top Chapter: %s -> %s\n\n",
+			strings.TrimSpace(h.Text),
+			link,
+		)
+
+		chap.Url = link
+
+		err := h.Request.Visit(
+			h.Request.AbsoluteURL(link),
+		)
+
+		if err != nil {
+			log.Println(
+				"Failed to visit chapter:",
+				err,
+			)
+		}
+	})
+	name = normalize(name) + "-" + "6f7fe6eb"
+	url := fmt.Sprintf("https://asurascans.com/comics/%s/chapter/%s", name, chapNum)
+	fmt.Println(url)
+
+	err := c.Visit(url)
+	if err != nil {
+		// log.Panic(err)
+
+		return chap, errors.New("Failed to visit chapter")
+	}
+
+	c.Wait()
+	fmt.Println("Done With Something")
+
+	return chap, nil
 }
 
 func normalize(name string) string {

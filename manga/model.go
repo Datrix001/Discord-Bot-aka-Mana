@@ -6,3 +6,9 @@ type Comic struct {
 	LatestChapter string
 	CoverURL      string
 }
+
+type Chapter struct {
+	MangaId   string
+	ChapterId string
+	Url       string
+}

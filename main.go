@@ -44,6 +44,8 @@ func main() {
 		case "search":
 			Search(s, m, args)
 
+		case "chapter":
+			ParticularChapter(s, m, args)
 		case "dm":
 			Dm(s, m)
 

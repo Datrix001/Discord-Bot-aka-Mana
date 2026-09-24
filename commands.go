@@ -79,6 +79,25 @@ func Dm(s *discordgo.Session, m *discordgo.MessageCreate) {
 	s.ChannelMessageSend(dmChannel.ID, "Hello "+userName)
 }
 
+func ParticularChapter(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+	lastIndex := len(args) - 1
+	chapNum := args[lastIndex]
+	chapName := strings.Join(args[2:lastIndex], " ")
+	comicDetails, err := sources.GetChapter(chapName, chapNum)
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, "Bro The manhwa you mentioned doesn't exist")
+		return
+	}
+	// details := fmt.Sprintf("", comicDetails.Name, comicDetails.Author, comicDetails.LatestChapter)
+	messageEmbed := discordgo.MessageEmbed{
+		Title:       strings.ToUpper(comicDetails.MangaId),
+		URL:         comicDetails.Url,
+		Description: comicDetails.ChapterId,
+		Color:       0x5865F2,
+	}
+	s.ChannelMessageSendEmbed(m.ChannelID, &messageEmbed)
+}
+
 func About(s *discordgo.Session, m *discordgo.MessageCreate) {
 	userName := m.Author.GlobalName
 	isPremium := ""
